@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OfflineAid - Zero Dependency Emergency Assistant. Works completely offline.">
+    <title>OfflineAid | Local Emergency & Preparedness Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- TOP HEADER BAR -->
+        <header class="app-header">
+            <div class="header-left">
+                <button id="mobile-menu-toggle" class="btn-icon" aria-label="Toggle navigation menu">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="brand-logo" id="logo-btn">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" class="brand-icon">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M12 8v8M8 12h8" stroke-width="2.5" stroke-linecap="round"></path>
+                    </svg>
+                    <div class="brand-text">
+                        <span class="brand-name">OfflineAid</span>
+                        <span class="brand-tagline">Emergency Preparedness</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GLOBAL SEARCH BAR -->
+            <div class="header-search">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="global-search-input" placeholder="Search first-aid, contacts, checklists..." autocomplete="off">
+                    <button id="clear-search-btn" class="btn-clear hidden">&times;</button>
+                </div>
+                <!-- SEARCH RESULTS DROPDOWN -->
+                <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+            </div>
+
+            <div class="header-right">
+                <!-- OFFLINE STATUS BADGE -->
+                <div id="offline-status-badge" class="status-badge status-online" title="Application is ready and works completely offline">
+                    <span class="status-dot"></span>
+                    <span id="status-text">OFFLINE READY</span>
+                </div>
+
+                <!-- QUICK EMERGENCY MODE TOGGLE -->
+                <button id="btn-quick-emergency" class="btn btn-emergency">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <span>Quick Emergency</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT (SIDEBAR + CONTENT) -->
+        <div class="app-body">
+            <!-- SIDEBAR NAVIGATION -->
+            <aside class="app-sidebar" id="app-sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#contacts" class="nav-item" data-view="contacts">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Emergency Contacts</span>
+                    </a>
+                    <a href="#firstaid" class="nav-item" data-view="firstaid">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        <span>First-Aid Guide</span>
+                    </a>
+                    <a href="#checklists" class="nav-item" data-view="checklists">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                        <span>Disaster Checklists</span>
+                    </a>
+                    <a href="#preparedness" class="nav-item" data-view="preparedness">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                        <span>Preparedness</span>
+                    </a>
+                    <a href="#profile" class="nav-item" data-view="profile">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>My Info (ICE)</span>
+                    </a>
+                    <a href="#backup" class="nav-item" data-view="backup">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <span>Export / Backup</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-privacy-note">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>100% Local & Private. No data ever leaves this device.</span>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="app-content">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <section id="view-dashboard" class="view-section active">
+                    <div class="dashboard-banner">
+                        <div class="banner-icon">
+                            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </div>
+                        <div class="banner-text">
+                            <h2>OFFLINE READY</h2>
+                            <p>Emergency assistance & essential preparedness information stored 100% locally on your computer. Accessible anytime, with or without internet.</p>
+                        </div>
+                        <div class="banner-privacy-badge">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <span>Privacy Guaranteed</span>
+                        </div>
+                    </div>
+
+                    <!-- DASHBOARD STATS GRID -->
+                    <div class="stats-grid">
+                        <div class="stat-card" data-target="contacts">
+                            <div class="stat-icon icon-red">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-contacts-count">0</span>
+                                <span class="stat-label">Emergency Contacts</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card" data-target="firstaid">
+                            <div class="stat-icon icon-blue">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-firstaid-count">10</span>
+                                <span class="stat-label">First-Aid Guides</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card" data-target="checklists">
+                            <div class="stat-icon icon-amber">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-disaster-progress">0%</span>
+                                <span class="stat-label">Disaster Preparedness</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card" data-target="preparedness">
+                            <div class="stat-icon icon-green">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-prep-progress">0%</span>
+                                <span class="stat-label">Go-Bag Supply Ready</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTION SHORTCUTS -->
+                    <div class="section-block">
+                        <div class="section-header">
+                            <h3><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Quick Action Shortcuts</h3>
+                        </div>
+                        <div class="quick-shortcuts-grid">
+                            <button class="shortcut-card card-cpr" id="quick-cpr-btn">
+                                <span class="shortcut-tag">CRITICAL</span>
+                                <h4>CPR Guidance</h4>
+                                <p>Unresponsive & not breathing adult steps.</p>
+                            </button>
+                            <button class="shortcut-card card-bleeding" id="quick-bleeding-btn">
+                                <span class="shortcut-tag">URGENT</span>
+                                <h4>Severe Bleeding</h4>
+                                <p>Direct pressure & wound care procedures.</p>
+                            </button>
+                            <button class="shortcut-card card-choking" id="quick-choking-btn">
+                                <span class="shortcut-tag">URGENT</span>
+                                <h4>Choking Relief</h4>
+                                <p>Heimlich maneuver step-by-step instructions.</p>
+                            </button>
+                            <button class="shortcut-card card-earthquake" id="quick-earthquake-btn">
+                                <span class="shortcut-tag">DISASTER</span>
+                                <h4>Earthquake Action</h4>
+                                <p>Drop, Cover & Hold On protocol checklist.</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PRIMARY EMERGENCY CONTACTS PREVIEW -->
+                    <div class="dashboard-grid-two">
+                        <div class="dashboard-panel">
+                            <div class="panel-header">
+                                <h3>Emergency Contacts</h3>
+                                <a href="#contacts" class="link-btn">View All &rarr;</a>
+                            </div>
+                            <div id="dash-contacts-list" class="contacts-mini-list">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="dashboard-panel">
+                            <div class="panel-header">
+                                <h3>Personal Emergency Card (ICE)</h3>
+                                <a href="#profile" class="link-btn">Edit Profile &rarr;</a>
+                            </div>
+                            <div id="dash-profile-card" class="profile-mini-card">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. EMERGENCY CONTACTS VIEW -->
+                <section id="view-contacts" class="view-section">
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>Emergency Contacts</h2>
+                            <p>Save critical phone numbers locally. Direct tap-to-call supported on mobile devices.</p>
+                        </div>
+                        <button id="btn-add-contact" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add Contact
+                        </button>
+                    </div>
+
+                    <div class="filter-search-bar">
+                        <input type="text" id="contacts-search-input" placeholder="Search contacts by name, phone, or relationship..." class="form-control">
+                    </div>
+
+                    <div id="contacts-grid" class="contacts-grid">
+                        <!-- Contact cards rendered here -->
+                    </div>
+                </section>
+
+                <!-- 3. FIRST-AID GUIDE VIEW -->
+                <section id="view-firstaid" class="view-section">
+                    <div class="medical-disclaimer-box">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <div>
+                            <strong>MEDICAL DISCLAIMER:</strong> This application provides general emergency first-aid information for educational purposes. For life-threatening emergencies, contact local emergency medical services (e.g. 911 / 112) immediately if possible.
+                        </div>
+                    </div>
+
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>First-Aid Reference Guide</h2>
+                            <p>Offline reference procedures for common medical emergencies.</p>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY FILTERS -->
+                    <div class="category-pills" id="firstaid-category-pills">
+                        <button class="pill active" data-category="all">All Topics</button>
+                        <button class="pill" data-category="Life Support">Life Support</button>
+                        <button class="pill" data-category="Wounds">Wounds & Bleeding</button>
+                        <button class="pill" data-category="Respiratory">Respiratory</button>
+                        <button class="pill" data-category="Injuries">Injuries & Sprains</button>
+                        <button class="pill" data-category="Environmental">Environmental</button>
+                        <button class="pill" data-category="General">General</button>
+                    </div>
+
+                    <div id="firstaid-grid" class="firstaid-grid">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </section>
+
+                <!-- 4. DISASTER CHECKLISTS VIEW -->
+                <section id="view-checklists" class="view-section">
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>Disaster Action Checklists</h2>
+                            <p>Step-by-step emergency procedures for natural disasters and severe incidents.</p>
+                        </div>
+                    </div>
+
+                    <div class="checklist-tabs" id="disaster-tabs">
+                        <!-- Dynamic disaster checklist tabs -->
+                    </div>
+
+                    <div id="checklist-active-container" class="checklist-container">
+                        <!-- Active disaster checklist items rendered here -->
+                    </div>
+                </section>
+
+                <!-- 5. PREPAREDNESS CHECKLIST VIEW -->
+                <section id="view-preparedness" class="view-section">
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>General Emergency Preparedness</h2>
+                            <p>Essential supplies and readiness actions to prepare your household before disaster strikes.</p>
+                        </div>
+                        <button id="btn-reset-preparedness" class="btn btn-secondary btn-sm">Reset Supplies Checklist</button>
+                    </div>
+
+                    <div class="progress-card">
+                        <div class="progress-info">
+                            <span class="progress-label">Go-Bag & Household Supply Readiness</span>
+                            <span class="progress-percentage" id="prep-percentage-text">0% Completed</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="prep-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div id="preparedness-list" class="checklist-items-list">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </section>
+
+                <!-- 6. PERSONAL EMERGENCY PROFILE VIEW -->
+                <section id="view-profile" class="view-section">
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>Personal Emergency Information (ICE)</h2>
+                            <p>Store your crucial medical profile locally for emergency responders.</p>
+                        </div>
+                        <button id="btn-print-profile" class="btn btn-secondary">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            Print Card
+                        </button>
+                    </div>
+
+                    <div class="privacy-notice-box">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span><strong>PRIVACY GUARANTEE:</strong> Your personal and medical details are saved strictly on this device. OfflineAid contains zero tracking, analytics, or cloud connections.</span>
+                    </div>
+
+                    <form id="profile-form" class="profile-form-grid">
+                        <div class="form-group col-span-2">
+                            <label for="prof-fullname">Full Name</label>
+                            <input type="text" id="prof-fullname" placeholder="e.g. John Alex Smith" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prof-blood">Blood Group</label>
+                            <select id="prof-blood" class="form-control">
+                                <option value="">Select Blood Group...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prof-ice">Primary ICE Contact</label>
+                            <input type="text" id="prof-ice" placeholder="e.g. Jane Doe (Sister) - 555-0199" class="form-control">
+                        </div>
+
+                        <div class="form-group col-span-2">
+                            <label for="prof-allergies">Severe Allergies</label>
+                            <textarea id="prof-allergies" rows="2" placeholder="e.g. Penicillin, Bee stings, Peanuts" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group col-span-2">
+                            <label for="prof-medications">Current Medications</label>
+                            <textarea id="prof-medications" rows="2" placeholder="e.g. Albuterol Inhaler, Insulin, Daily Aspirin" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group col-span-2">
+                            <label for="prof-notes">Medical Conditions & Notes</label>
+                            <textarea id="prof-notes" rows="3" placeholder="e.g. Asthmatic, Diabetes Type 1, Pacemaker fitted" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group col-span-2">
+                            <label for="prof-documents">Important Physical Documents Location</label>
+                            <input type="text" id="prof-documents" placeholder="e.g. Passport & insurance papers in fireproof safe in bedroom closet" class="form-control">
+                        </div>
+
+                        <div class="form-actions col-span-2">
+                            <button type="submit" class="btn btn-primary">Save Profile Data</button>
+                            <button type="button" id="btn-clear-profile" class="btn btn-danger">Clear Profile</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- 7. BACKUP / RESTORE / SETTINGS VIEW -->
+                <section id="view-backup" class="view-section">
+                    <div class="section-title-bar">
+                        <div>
+                            <h2>Export, Backup & Data Management</h2>
+                            <p>Export your offline emergency data into a portable JSON backup file or restore from previous backup.</p>
+                        </div>
+                    </div>
+
+                    <div class="backup-cards-grid">
+                        <!-- EXPORT CARD -->
+                        <div class="backup-card">
+                            <div class="card-icon icon-blue">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </div>
+                            <h3>Export Data Backup</h3>
+                            <p>Download a complete JSON file containing your saved emergency contacts, personal medical information, and checklist progress.</p>
+                            <button id="btn-export-json" class="btn btn-primary">Download JSON Backup</button>
+                        </div>
+
+                        <!-- IMPORT CARD -->
+                        <div class="backup-card">
+                            <div class="card-icon icon-green">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </div>
+                            <h3>Restore from Backup</h3>
+                            <p>Select a previously exported JSON backup file to restore your contacts and medical preferences on this device.</p>
+                            <label class="btn btn-secondary file-upload-btn">
+                                Choose Backup JSON File
+                                <input type="file" id="import-file-input" accept=".json" class="hidden-file-input">
+                            </label>
+                        </div>
+
+                        <!-- RESET DATA CARD -->
+                        <div class="backup-card card-danger-border">
+                            <div class="card-icon icon-red">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </div>
+                            <h3>Reset All Local Data</h3>
+                            <p>Permanently delete all custom emergency contacts, medical profile details, and checklist progress on this device.</p>
+                            <button id="btn-reset-all-data" class="btn btn-danger">Delete All My Data</button>
+                        </div>
+                    </div>
+
+                    <!-- ZERO DEPENDENCY AUDIT CARD -->
+                    <div class="audit-section">
+                        <h3>Zero-Dependency Hackathon Compliance Audit</h3>
+                        <div class="audit-grid">
+                            <div class="audit-item">
+                                <strong>Python Packages:</strong> <span>NONE (StdLib http.server, sqlite3)</span>
+                            </div>
+                            <div class="audit-item">
+                                <strong>JS Frameworks / Libraries:</strong> <span>NONE (Vanilla ES6 JavaScript)</span>
+                            </div>
+                            <div class="audit-item">
+                                <strong>CSS Frameworks:</strong> <span>NONE (Pure Vanilla CSS3)</span>
+                            </div>
+                            <div class="audit-item">
+                                <strong>External CDNs / Fonts / Icons:</strong> <span>NONE (Inline SVG icons & System Fonts)</span>
+                            </div>
+                            <div class="audit-item">
+                                <strong>External APIs / Cloud Services:</strong> <span>NONE (100% Local Device Execution)</span>
+                            </div>
+                            <div class="audit-item">
+                                <strong>Network Requirement:</strong> <span>NONE (Functions 100% Offline)</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- QUICK EMERGENCY MODE FULLSCREEN OVERLAY -->
+    <div id="quick-emergency-overlay" class="emergency-overlay hidden">
+        <div class="overlay-header">
+            <div class="overlay-title">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>QUICK EMERGENCY MODE</span>
+            </div>
+            <button id="btn-exit-emergency" class="btn btn-light-emergency">Exit Quick Mode &times;</button>
+        </div>
+
+        <div class="overlay-content">
+            <!-- PRIMARY CONTACTS HIGH CONTRAST -->
+            <div class="emergency-block">
+                <h3><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Call Emergency Contacts</h3>
+                <div id="quick-contacts-container" class="quick-contacts-grid">
+                    <!-- Large touch target telephone buttons rendered here -->
+                </div>
+            </div>
+
+            <!-- LIFE SUPPORT SHORTCUTS -->
+            <div class="emergency-block">
+                <h3><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Immediate First-Aid Procedures</h3>
+                <div class="quick-guides-grid">
+                    <button class="quick-guide-btn" onclick="app.openFirstAidModal('cpr')">
+                        <span class="guide-num">1</span>
+                        <div>
+                            <strong>CPR Protocol</strong>
+                            <span>100-120 compressions/min, 2 inches deep</span>
+                        </div>
+                    </button>
+                    <button class="quick-guide-btn" onclick="app.openFirstAidModal('severe-bleeding')">
+                        <span class="guide-num">2</span>
+                        <div>
+                            <strong>Severe Bleeding</strong>
+                            <span>Direct firm continuous pressure with cloth</span>
+                        </div>
+                    </button>
+                    <button class="quick-guide-btn" onclick="app.openFirstAidModal('choking')">
+                        <span class="guide-num">3</span>
+                        <div>
+                            <strong>Choking Relief</strong>
+                            <span>5 Abdominal thrusts + 5 back blows</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PERSONAL MEDICAL ALERT SUMMARY -->
+            <div class="emergency-block">
+                <h3><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Personal Medical Profile (ICE)</h3>
+                <div id="quick-profile-container" class="quick-profile-box">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DIALOGS -->
+
+    <!-- FIRST AID DETAIL MODAL -->
+    <div id="firstaid-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-fa-title">First Aid Guide</h3>
+                <button class="modal-close" onclick="app.closeModal('firstaid-modal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-fa-body">
+                <!-- Guide steps loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal('firstaid-modal')">Close Guide</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT CONTACT MODAL -->
+    <div id="contact-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-contact-title">Add Emergency Contact</h3>
+                <button class="modal-close" onclick="app.closeModal('contact-modal')">&times;</button>
+            </div>
+            <form id="contact-form">
+                <input type="hidden" id="contact-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contact-name">Full Name *</label>
+                        <input type="text" id="contact-name" class="form-control" required placeholder="e.g. Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Phone Number *</label>
+                        <input type="tel" id="contact-phone" class="form-control" required placeholder="e.g. 555-0199 or 911">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-relationship">Relationship / Role</label>
+                        <input type="text" id="contact-relationship" class="form-control" placeholder="e.g. Sister, Doctor, Neighbor">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-notes">Notes / Details</label>
+                        <textarea id="contact-notes" rows="2" class="form-control" placeholder="e.g. Holds spare house key"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('contact-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3 id="confirm-title">Confirm Action</h3>
+                <button class="modal-close" onclick="app.closeModal('confirm-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-ok-btn">Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
