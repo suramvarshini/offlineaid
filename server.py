@@ -19,8 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 # Port configuration
-HOST = "127.0.0.1"
-PORT = 8000
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("PORT", 8000))
 
 class OfflineAidHandler(BaseHTTPRequestHandler):
     """Custom HTTP Request Handler serving static files & REST API endpoints."""
