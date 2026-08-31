@@ -1,0 +1,23 @@
+ZERO DEPENDENCY PROOF
+
+Runtime: Python
+
+Third-party runtime dependencies:
+NONE
+
+Python standard-library modules used:
+sys
+os
+json
+mimetypes
+urllib.parse
+pathlib
+http.server
+sqlite3
+threading
+
+Frontend:
+HTML + CSS + Vanilla JavaScript
+
+No pip packages are required.
+No npm packages are required.
